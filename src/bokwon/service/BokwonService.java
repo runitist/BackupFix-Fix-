@@ -25,7 +25,7 @@ import bokwon.util.BokwonFileTotalByteReader;
 public class BokwonService implements Runnable {
 	// 대용량 파일 복원 프로그램
 
-	private BokwonModel bm;
+	private final BokwonModel bm;
 
 	public BokwonService(BokwonModel bm) {
 		this.bm = bm;
@@ -181,7 +181,9 @@ public class BokwonService implements Runnable {
 
 				for (int j = 0; j < sarr.length; j++) {
 					// 각 컬럼별 값 공백 제거
-					sarr[j] = sarr[j].trim();
+					if(j != IMG_REG_COL && j != IMG_LIVE_COL) {
+						sarr[j] = sarr[j].trim();
+					}
 				}
 				/*
 				 * 주요 컬럼 :
@@ -390,12 +392,10 @@ public class BokwonService implements Runnable {
 	private void extractColumnImg(String AESCode, String sarrColString, File imgFile) {
 		// 이미지 파일 추출 메소드
 		try {
-			if (!sarrColString.equals("\0")) {
 				byte[] bt = byteArrDecode(sarrColString, AESCode); // 암호화된 이미지를 디코드
 				FileOutputStream fos = new FileOutputStream(imgFile);// 새파일 생성
 				fos.write(bt);// 생성된 파일에 바이너리 바이트 덮어쓰기.
 				fos.close();
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
